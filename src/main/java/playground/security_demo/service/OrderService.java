@@ -1,7 +1,9 @@
 package playground.security_demo.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import playground.security_demo.domain.Order;
+import reactor.core.publisher.Mono;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +32,8 @@ public class OrderService {
                 .toList();
     }
 
-    public boolean deleteOrder(String orderId) {
-        return orders.removeIf(order -> order.id().equals(orderId));
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<Boolean> deleteOrder(String orderId) {
+        return Mono.just(orders.removeIf(order -> order.id().equals(orderId)));
     }
 }
