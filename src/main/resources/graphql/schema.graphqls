@@ -1,0 +1,22 @@
+type Query {
+    # Every logged-in user can query orders
+    myOrders: [Order]
+}
+
+type Order {
+    id: ID
+    details: String
+}
+
+type Mutation {
+    # Only Admins can delete orders
+    deleteOrder(input: DeleteOrderInput!): DeleteOrderPayload
+}
+
+input DeleteOrderInput {
+    orderId: ID
+}
+
+type DeleteOrderPayload {
+    success: Boolean
+}
