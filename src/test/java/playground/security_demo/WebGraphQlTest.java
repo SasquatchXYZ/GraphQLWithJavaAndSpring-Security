@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.List;
+import java.util.Objects;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @Import(WebGraphQlTest.WebInterceptor.class)
@@ -61,5 +62,22 @@ public class WebGraphQlTest {
                 .entityList(String.class)
                 .isEqualTo(List.of("1", "3", "5", "6"));
         // Luna's orders previously defined in the OrderService
+    }
+
+    @Test
+    void testMutationForbidden() {
+        WebGraphQlTester webGraphQlTester = WebGraphQlTester.create(webGraphQlHandler);
+        String document = """
+                mutation delete($id:ID){
+                deleteOrder(input:{orderId:$id}){success}}""";
+        webGraphQlTester
+                .document(document)
+                .variable("id", "1")
+                .execute()
+                .errors()
+                .expect(responseError ->
+                        Objects.equals(responseError.getMessage(), "Forbidden") &&
+                                responseError.getPath().equals("deleteOrder"))
+                .verify();
     }
 }
