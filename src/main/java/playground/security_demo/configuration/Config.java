@@ -19,7 +19,7 @@ public class Config {
     @Bean
     SecurityWebFilterChain springWebFilterChain(
             ServerHttpSecurity http
-    ) throws Exception {
+    ) {
         http.formLogin(formLoginSpec ->
                 formLoginSpec.authenticationSuccessHandler(
                         new RedirectServerAuthenticationSuccessHandler("/graphiql")
