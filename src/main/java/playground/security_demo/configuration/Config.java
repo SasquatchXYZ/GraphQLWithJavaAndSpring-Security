@@ -15,9 +15,9 @@ import org.springframework.security.web.server.authentication.RedirectServerAuth
 public class Config {
 
     @Bean
-    SecurityWebFilterChain securityWebFilterChain(ServerHttpSecurity http) throws Exception {
-        http.oauth2Login(oauth2 ->
-                oauth2.authenticationSuccessHandler(
+    SecurityWebFilterChain springWebFilterChain(ServerHttpSecurity http) throws Exception {
+        http.formLogin(formLoginSpec ->
+                formLoginSpec.authenticationSuccessHandler(
                         new RedirectServerAuthenticationSuccessHandler("/graphiql")
                 )
         );

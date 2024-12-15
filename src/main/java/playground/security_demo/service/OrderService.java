@@ -3,6 +3,7 @@ package playground.security_demo.service;
 import org.springframework.stereotype.Service;
 import playground.security_demo.domain.Order;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -12,7 +13,7 @@ public class OrderService {
 
     public OrderService() {
         // A mutable list of orders
-        this.orders = List.of(
+        this.orders = new ArrayList<>(List.of(
                 new Order("1", "Kibbles", "Luna"),
                 new Order("2", "Chicken", "Skipper"),
                 new Order("3", "Rice", "Luna"),
@@ -20,7 +21,7 @@ public class OrderService {
                 new Order("5", "Bone", "Luna"),
                 new Order("6", "Toys", "Luna"),
                 new Order("7", "Toys", "Skipper")
-        );
+        ));
     }
 
     public List<Order> getOrdersByOwner(String owner) {
