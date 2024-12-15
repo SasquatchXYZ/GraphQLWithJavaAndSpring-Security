@@ -1,8 +1,12 @@
 package playground.security_demo.service;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.ReactiveSecurityContextHolder;
 import org.springframework.stereotype.Service;
 import playground.security_demo.domain.Order;
+import reactor.core.publisher.Mono;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +28,18 @@ public class OrderService {
         ));
     }
 
-    public List<Order> getOrdersByOwner(String owner) {
-        return orders.stream()
-                .filter(order -> order.owner().equals(owner))
-                .toList();
+    public Mono<List<Order>> getOrdersForCurrentUser() {
+        return ReactiveSecurityContextHolder.getContext()
+                .map(securityContext -> {
+                    Principal principal = securityContext.getAuthentication();
+                    return orders.stream()
+                            .filter(order -> order.owner().equals(principal.getName()))
+                            .toList();
+                });
     }
 
-    public boolean deleteOrder(String orderId) {
-        return orders.removeIf(order -> order.id().equals(orderId));
+    @PreAuthorize("hasRole('ADMIN')")
+    public Mono<Boolean> deleteOrder(String orderId) {
+        return Mono.just(orders.removeIf(order -> order.id().equals(orderId)));
     }
 }
